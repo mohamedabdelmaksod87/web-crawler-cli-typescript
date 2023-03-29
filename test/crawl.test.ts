@@ -1,5 +1,5 @@
-const { normalizeUrl, getUrlsFromHtml } = require("../crawl");
-const { test, expect } = require("@jest/globals");
+import { normalizeUrl, getUrlsFromHtml } from "../src/crawl";
+import { test, expect } from "@jest/globals";
 
 test("normlize url strip protocol", () => {
   const input = "http://blog.boot.dev/path";
@@ -78,6 +78,6 @@ test("getUrlsFromHtml invalid path", () => {
   `;
   const inputBaseUrl = "https://blog.boot.dev";
   const result = getUrlsFromHtml(inputHtmlBody, inputBaseUrl);
-  const expected = [];
+  const expected: string[] = [];
   expect(result).toEqual(expected);
 });

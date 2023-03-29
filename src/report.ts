@@ -1,4 +1,6 @@
-function printReport(pages) {
+import { pagesArray, pages } from "./types";
+
+export function printReport(pages: pages) {
   console.log("=========");
   console.log("REPORT");
   console.log("=========");
@@ -11,15 +13,10 @@ function printReport(pages) {
   console.log("===========");
 }
 
-function sortPages(pages) {
-  const pagesArr = Object.entries(pages);
+export function sortPages(pages: pages): pagesArray {
+  const pagesArr: pagesArray = Object.entries(pages);
   pagesArr.sort((a, b) => {
     return b[1] - a[1];
   });
   return pagesArr;
 }
-
-module.exports = {
-  sortPages,
-  printReport,
-};

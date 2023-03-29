@@ -1,7 +1,7 @@
-const { crawlUrl } = require("./crawl");
-const { printReport } = require("./report");
+import { crawlUrl } from "./crawl";
+import { printReport } from "./report";
 
-async function main() {
+async function main(): Promise<void> {
   if (process.argv.length < 3) {
     return console.log("No URL Provided");
   }

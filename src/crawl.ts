@@ -1,6 +1,12 @@
-const { JSDOM } = require("jsdom");
+import { pages } from "./types";
 
-async function crawlUrl(baseUrl, currentUrl, pages) {
+import { JSDOM } from "jsdom";
+
+export async function crawlUrl(
+  baseUrl: string,
+  currentUrl: string,
+  pages: pages
+): Promise<pages> {
   const baseUrlObj = new URL(baseUrl);
   const currentUrlObj = new URL(currentUrl);
   if (baseUrlObj.hostname !== currentUrlObj.hostname) {
@@ -20,12 +26,12 @@ async function crawlUrl(baseUrl, currentUrl, pages) {
     const res = await fetch(currentUrl);
     if (res.status > 399) {
       throw new Error(
-        `Error in fetching ${url} with status code ${res.status}`
+        `Error in fetching ${currentUrl} with status code ${res.status}`
       );
     }
 
     const contentType = res.headers.get("Content-Type");
-    if (!contentType.includes("text/html")) {
+    if (!contentType || !contentType.includes("text/html")) {
       throw new Error(`Response Content-Type is not text/html`);
     }
 
@@ -36,13 +42,14 @@ async function crawlUrl(baseUrl, currentUrl, pages) {
       pages = await crawlUrl(baseUrl, nextUrl, pages);
     }
   } catch (err) {
-    console.error(`${err.message} on page: ${currentUrl}`);
+    const error = err as Error;
+    console.error(`${error.message} on page: ${currentUrl}`);
     return pages;
   }
   return pages;
 }
 
-function getUrlsFromHtml(htmlBody, baseUrl) {
+export function getUrlsFromHtml(htmlBody: string, baseUrl: string) {
   const urls = [];
   const dom = new JSDOM(htmlBody);
   const linkElements = dom.window.document.querySelectorAll("a");
@@ -53,7 +60,8 @@ function getUrlsFromHtml(htmlBody, baseUrl) {
         const urlObj = new URL(`${baseUrl}${link.href}`);
         urls.push(urlObj.href);
       } catch (err) {
-        console.log(err.message);
+        const error = err as Error;
+        console.log(error.message);
       }
     } else {
       //absolute url
@@ -61,14 +69,15 @@ function getUrlsFromHtml(htmlBody, baseUrl) {
         const urlObj = new URL(link.href);
         urls.push(urlObj.href);
       } catch (err) {
-        console.log(err.message);
+        const error = err as Error;
+        console.log(error.message);
       }
     }
   }
   return urls;
 }
 
-function normalizeUrl(url) {
+export function normalizeUrl(url: string) {
   const urlObj = new URL(url);
   const hostPath = `${urlObj.host}${urlObj.pathname}`;
   if (hostPath && hostPath.slice(-1) === "/") {
@@ -76,9 +85,3 @@ function normalizeUrl(url) {
   }
   return hostPath;
 }
-
-module.exports = {
-  normalizeUrl,
-  getUrlsFromHtml,
-  crawlUrl,
-};
