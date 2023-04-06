@@ -4,6 +4,7 @@
   "description": "project to learn webcrawler",
   "main": "index.js",
   "scripts": {
+    "dev": "ts-node ./src/main.ts",
     "build": "tsc",
     "start": "npm run build && node --no-warnings ./dist/main.js",
     "test": "jest"
